@@ -33,6 +33,7 @@ verificarUsuario("carolina")
   });
 }
 
+
 async function mostrarDatos() {
   console.log("Esperando los datos...");
   const resultado = await simularPeticion();
