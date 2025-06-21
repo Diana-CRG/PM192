@@ -1,92 +1,63 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import {
+  View,
+  Text,
+  Button,
+  Alert,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from 'react-native';
 
 export default function App() {
-  const [modoOscuro, setModoOscuro] = useState(false);
-  const [activarSwitch, setActivarSwitch] = useState(false);
-
-  
-   
+  const [botonDesactivado, setBotonDesactivado] = useState(false);
+  const [contador, setContador] = useState(0);
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={[styles.contenedor, modoOscuro && styles.fondoOscuro]}>
-         <Text style={[styles.titulo, modoOscuro && styles.textoClaro]}>
-            Práctica con Switch
-         </Text>
+    <View style={styles.container}>
+      <StatusBar style="auto" />
 
-
-        {/* Primer switch */}
-        <View style={styles.opcion}>
-          <Text style={[styles.etiqueta, modoOscuro && styles.textoClaro]}>
-            Activar switch 2
-          </Text>
-          <Switch
-            value={activarSwitch}
-            onValueChange={setActivarSwitch}
-            trackColor={{ false: '#ccc', true: '#4caf50' }}
-            thumbColor={activarSwitch ? '#ffffff' : '#999999'}
-          />
-        </View>
-
-        {/* Switch para modo oscuro */}
-        <View style={styles.opcion}>
-          <Text style={[styles.etiqueta, modoOscuro && styles.textoClaro]}>
-            Modo oscuro
-          </Text>
-          <Switch
-            value={modoOscuro}
-            onValueChange={setModoOscuro}
-            disabled={!activarSwitch}
-            trackColor={
-              !activarSwitch
-                ? { false: '#ff9999', true: '#ff3b30' }
-                : { false: '#ccc', true: '#4caf50' }
-            }
-            thumbColor={
-              !activarSwitch
-                ? '#ff3b30'
-                : modoOscuro
-                ? '#ffffff'
-                : '#999999'
-            }
-          />
-        </View>
-
-      </SafeAreaView>
-    </SafeAreaProvider>
+      {/* PRIMER BOTÓN - Alert simple */}
+      <View style={styles.buttonWrapper}>
+        <Button
+            title="Presióname"
+            color="#841584"
+            onPress={() => alert('Me presionaste =p')}
+        />
+      </View>
+    </View>
   );
 }
 
-/* Zona 3: Estilos */
 const styles = StyleSheet.create({
-  contenedor: {
+  container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 30,
     justifyContent: 'center',
-  },
-  titulo: {
-    fontSize: 24,
-    marginBottom: 40,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-
-  fondoOscuro: {
-    backgroundColor: '#1a1a1a',
-  },
-  textoClaro: {
-    color: '#ffffff', // solo uno definido
-  },
-  opcion: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 30,
     alignItems: 'center',
   },
-  etiqueta: {
+  buttonWrapper: {
+    marginTop: 15,
+  },
+  botonJustificado: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: 250,
+    marginTop: 15,
+  },
+  dynamicButton: {
+    padding: 10,
+    marginTop: 15,
+    backgroundColor: '#987867',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  dynamicText: {
+    color: '#345676',
     fontSize: 18,
+  },
+  imagen: {
+    width: 100,
+    height: 100,
   },
 });
