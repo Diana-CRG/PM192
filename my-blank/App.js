@@ -25,6 +25,13 @@ export default function App() {
             color="#841584"
             onPress={() => alert('Me presionaste =p')}
         />
+        <Button
+          title={botonDesactivado ? 'Desactivado' : 'Desactivame'}
+          disabled={botonDesactivado}
+          onPress={() => setBotonDesactivado(true)}
+          color="#999999"
+        />
+
       </View>
     </View>
   );
