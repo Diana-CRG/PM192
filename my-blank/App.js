@@ -1,109 +1,75 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import {
-  View,
-  Text,
-  Button,
-  Alert,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from 'react-native';
+
+/* Zone 1: Importaciones */
+import { ImageBackground, StyleSheet, Text, View, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+
+const FondoBienvenida = () => {
+  return (
+    <ImageBackground
+      source={require('./assets/fondo.jpeg')}
+      style={styles.fondo}
+    >
+      <View style={styles.contenido}>
+        <Text style={styles.titulo}>Este es el Splash Screen</Text>
+      </View>
+    </ImageBackground>
+  );
+};
+
+/* Zone 2: Main */
 
 export default function App() {
-  const [botonDesactivado, setBotonDesactivado] = useState(false);
-  const [contador, setContador] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);  // Ocultar splash después de 3 segundos
+    }, 5000);
+
+    return () => clearTimeout(timer); // Limpiar timer al desmontar
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-
-      {/* PRIMER BOTÓN - Alert simple */}
-      <View style={styles.buttonWrapper}>
-        <Button
-          title="Presióname"
-          color="#841584"
-          onPress={() => alert('Me presionaste =p')}
-        />
-      </View>
-
-      {/* SEGUNDO BOTÓN - Se desactiva al presionarse */}
-      <View style={styles.buttonWrapper}>
-        <Button
-          title={botonDesactivado ? 'Desactivado' : 'Desactivame'}
-          disabled={botonDesactivado}
-          onPress={() => setBotonDesactivado(true)}
-          color="#999999"
-        />
-      </View>
-
-      {/* TERCER BOTÓN - Botones izquierdo y derecho */}
-      <View style={styles.botonJustificado}>
-        <Button
-          title="Left button"
-          color="#674323"
-          onPress={() => Alert.alert('Botón izquierdo presionado')}
-        />
-        <Button
-          title="Right button"
-          color="#097865"
-          onPress={() => Alert.alert('Botón derecho presionado')}
-        />
-      </View>
-
-      {/* CUARTO BOTÓN - Contador con TouchableOpacity */}
-      <TouchableOpacity
-        style={styles.dynamicButton}
-        onPress={() => setContador(contador + 1)}
-      >
-        <Text style={styles.dynamicText}>
-          Contador: {contador}
-        </Text>
-      </TouchableOpacity>
-
-      {/* QUINTO BOTÓN - Imagen presionable (pokebola) */}
-      <TouchableOpacity
-        style={styles.buttonWrapper}
-        onPress={() => alert('La pokebola ha sido presionada')}
-      >
-        <Image
-          source={require('./assets/pokebola.png')}
-          style={styles.imagen}
-        />
-      </TouchableOpacity>
-    </View>
+    <SafeAreaView style={styles.container}>
+      {showSplash ? (
+        <FondoBienvenida />
+      ) : (
+        <View style={styles.mainContent}>
+          <Text style={styles.mainText}>Pantalla principal</Text>
+          {/* Aquí va el resto de tu app después del splash */}
+        </View>
+      )}
+    </SafeAreaView>
   );
 }
 
+/* Zone 3: Estilos */
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  fondo: {
+    flex: 1,
+  },
+  contenido: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)', // para oscurecer la imagen
+  },
+  titulo: {
+    fontSize: 28,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  mainContent: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonWrapper: {
-    marginTop: 15,
-  },
-  botonJustificado: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 300,
-    marginTop: 15,
-  },
-  dynamicButton: {
-    padding: 10,
-    marginTop: 15,
-    backgroundColor: '#987867',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  dynamicText: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  imagen: {
-    width: 100,
-    height: 100,
-    marginTop: 15,
+  mainText: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
+
