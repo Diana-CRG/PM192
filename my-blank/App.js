@@ -1,7 +1,6 @@
-
 /* Zone 1: Importaciones */
 import { ImageBackground, StyleSheet, Text, View, SafeAreaView } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 const FondoBienvenida = () => {
   return (
@@ -10,7 +9,7 @@ const FondoBienvenida = () => {
       style={styles.fondo}
     >
       <View style={styles.contenido}>
-        <Text style={styles.titulo}>Este es el Splash Screen</Text>
+        <Text style={styles.titulo}>¡Pantalla de unicio!</Text>
       </View>
     </ImageBackground>
   );
@@ -19,26 +18,9 @@ const FondoBienvenida = () => {
 /* Zone 2: Main */
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);  // Ocultar splash después de 3 segundos
-    }, 5000);
-
-    return () => clearTimeout(timer); // Limpiar timer al desmontar
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
-      {showSplash ? (
-        <FondoBienvenida />
-      ) : (
-        <View style={styles.mainContent}>
-          <Text style={styles.mainText}>Pantalla principal</Text>
-          {/* Aquí va el resto de tu app después del splash */}
-        </View>
-      )}
+      <FondoBienvenida />
     </SafeAreaView>
   );
 }
@@ -62,14 +44,4 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  mainContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  mainText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
 });
-
