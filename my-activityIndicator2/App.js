@@ -1,31 +1,37 @@
 /* Zona 1: Importaciones */
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
+import { StatusBar } from 'expo-status-bar'; // permite personalizar la barra de estado del sistema, que es la parte superior del dispositivo donde está la hora, batería, señal, etc.
+import React, { useState } from 'react';  //React es obligatorio para JSX. useState maneja el estado de cargando
+import { StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';//Son los componentes base para diseño y texto.Es el spinner de carga que se muestra al presionar el botón.
 
 /* Zona 2: Componente hijo con PROPS */
-const IndicadorCarga = ({ color, size }) => {
+//Es un componente reutilizable que recibe color y size como props para mostrar un spinner (círculo de carga) con esos estilos.
+const IndicadorCarga = ({ color, size }) => { 
   return <ActivityIndicator style={styles.indicador} color={color} size={size} />;
 };
 
 /* Zona 3: Componente principal */
+//Guarda si estamos cargando (true) o no (false). Cuando el usuario presiona el botón, 
+// cambia a true y luego regresa a false después de 3 segundos.
 export default function App() {
   const [cargando, setCargando] = useState(false); // STATE
 
+//Funcion de carga
   const iniciarCarga = () => {
     setCargando(true);
     setTimeout(() => {
       setCargando(false);
-    }, 3000); // Simulación de carga
+    }, 3000); // Simulación de carga. Simula una carga de datos por 3 segundos. Después de eso, se oculta el ActivityIndicator.
   };
 
+  //Renderizado
   return (
     <View style={styles.container}>
       <Text style={styles.textoPrincipal}>Uso de ActivityIndicator</Text>
 
+        
       {cargando ? (
-        <IndicadorCarga color="deepskyblue" size="large" /> // PROPS enviados
-      ) : (
+        <IndicadorCarga color="tomato" size="large" /> // PROPS enviados
+      ) : ( //Si cargando es true, se muestra el spinner. Si no, se muestra un mensaje.
         <Text style={styles.textoSecundario}>Presiona el botón para comenzar</Text>
       )}
 
@@ -41,7 +47,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ccff90', // Verde limón
+    backgroundColor: '#ccff90', // Fondo Verde limón
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
@@ -58,6 +64,6 @@ const styles = StyleSheet.create({
     color: '#3a3a3a',
   },
   indicador: {
-    marginBottom: 20,
+    marginBottom: 20, //Da espacio debajo del ActivityIndicator para que no se junte con el botón.
   },
 });
