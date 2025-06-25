@@ -13,7 +13,7 @@ const IndicadorCarga = ({ color, size }) => {
 //Guarda si estamos cargando (true) o no (false). Cuando el usuario presiona el botón, 
 // cambia a true y luego regresa a false después de 3 segundos.
 export default function App() {
-  const [cargando, setCargando] = useState(false); // STATE
+  const [cargando, setCargando] = useState(false); // 
 
 //Funcion de carga
   const iniciarCarga = () => {
