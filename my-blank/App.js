@@ -1,146 +1,170 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, SectionList, FlatList, StatusBar, TouchableOpacity } from 'react-native'; 
 
 export default function App() {
-  const [nombres, setNombres] = useState([
-    'Polo', 'Marlen', 'Baruch', 'Gabo', 'Miguel', 'Yahir',
-    'Alexis', 'Marian', 'Gael', 'Mario', 'Paola', 'Toñito',
-    'Diana', 'Daniela', 'Uri'
+  // Estado para controlar qué tipo de lista mostrar (SectionList o FlatList)
+  const [showFlatList, setShowFlatList] = useState(false);
+
+  // Datos para SectionList - organizados en secciones con títulos
+  const [datosSeccionados, setDatosSeccionados] = useState([
+    {
+      title: 'Mensajes Destacados',
+      data: [
+        { id: '1', nombre: 'Ana', mensaje: '¡Hola!' },
+        { id: '2', nombre: 'Juan', mensaje: 'Salinas mató a Colosio.' },
+      ],
+    },
+    {
+      title: 'Mis Recordatorios',
+      data: [
+        { id: '3', nombre: 'Yo', mensaje: 'Comprar comida para la semana.' },
+        { id: '4', nombre: 'Yo', mensaje: 'Revisar el clima.' },
+        { id: '5', nombre: 'Yo', mensaje: 'Preocuparme por las tareas pendientes.' },
+      ],
+    },
+    {
+      title: 'Ideas para Proyectos',
+      data: [
+        { id: '6', nombre: 'Recetas', mensaje: 'App de recetas personalizadas.' },
+        { id: '7', nombre: 'Copia de notion', mensaje: 'Un rastreador de hábitos diario.' },
+      ],
+    },
   ]);
 
-  const [nuevoNombre, setNuevoNombre] = useState('');
+  // Datos para FlatList - lista simple sin secciones
+  const [datosFlatList, setDatosFlatList] = useState([
+    { id: '1', nombre: 'María', mensaje: 'Buenos días a todos' },
+    { id: '2', nombre: 'Pedro', mensaje: 'Recordar la junta de mañana' },
+    { id: '3', nombre: 'Luis', mensaje: 'Enviar el reporte semanal' },
+    { id: '4', nombre: 'Carmen', mensaje: 'Revisar las tareas pendientes' },
+    { id: '5', nombre: 'Roberto', mensaje: 'Actualizar la documentación' },
+    { id: '6', nombre: 'Sofia', mensaje: 'Preparar presentación' },
+  ]);
 
-  const [scrollHeight, setScrollHeight] = useState(0);
-  const [contentHeight, setContentHeight] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
-
-  const handleScroll = (event) => {
-    setScrollY(event.nativeEvent.contentOffset.y);
-  };
-
-  const scrollbarHeight = scrollHeight * (scrollHeight / contentHeight);
-  const scrollbarPosition = scrollY * (scrollHeight / contentHeight);
-
-  const agregarNombre = () => {
-    const nombreTrim = nuevoNombre.trim();
-    if (nombreTrim.length > 0) {
-      setNombres([...nombres, nombreTrim]);
-      setNuevoNombre('');
-    }
-  };
+  // Función para renderizar cada item individual
+  const renderItem = ({ item }) => (
+    <View style={styles.itemCard}>
+      <Text style={styles.itemNombre}>{item.nombre}</Text>
+      <Text style={styles.itemMensaje}>{item.mensaje}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Pase de Lista</Text>
-
-      <View style={styles.inputRow}>
-        <TextInput
-          style={styles.input}
-          placeholder="Agréguese a la lista"
-          placeholderTextColor="#888"
-          value={nuevoNombre}
-          onChangeText={setNuevoNombre}
-          onSubmitEditing={agregarNombre}
-          returnKeyType="done"
-        />
-        <TouchableOpacity style={styles.btnAgregar} onPress={agregarNombre}>
-          <Text style={styles.btnText}>Agregar</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View
-        style={styles.scrollWrapper}
-        onLayout={(event) => setScrollHeight(event.nativeEvent.layout.height)}
+      {/* Barra de estado del dispositivo */}
+      <StatusBar barStyle="dark-content" /> 
+      
+      {/* Título dinámico que cambia según el tipo de lista */}
+      <Text style={styles.titulo}>{showFlatList ? 'Flat List' : 'Section List'}</Text>
+      
+      {/* Botón para alternar entre SectionList y FlatList */}
+      <TouchableOpacity 
+        style={styles.switchButton} 
+        onPress={() => setShowFlatList(!showFlatList)}
       >
-        <ScrollView
-          style={styles.scrollArea}
-          onContentSizeChange={(w, h) => setContentHeight(h)}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          showsVerticalScrollIndicator={false}
-        >
-          {nombres.map((nombre, index) => (
-            <View key={index} style={styles.item}>
-              <Text style={styles.texto}>{nombre}</Text>
-            </View>
-          ))}
-        </ScrollView>
+        <Text style={styles.switchButtonText}>
+          Cambiar a {showFlatList ? 'SectionList' : 'FlatList'}
+        </Text>
+      </TouchableOpacity>
 
-        {contentHeight > scrollHeight && (
-          <View style={[styles.scrollBar, { height: scrollbarHeight, top: scrollbarPosition }]} />
-        )}
-      </View>
-
-      <StatusBar style="light" />
+      {/* Renderizado condicional: muestra FlatList o SectionList según el estado */}
+      {showFlatList ? (
+        <FlatList
+          data={datosFlatList}                    // Datos a mostrar
+          keyExtractor={(item) => item.id}        // keyExtractor: Función que extrae una key única de cada item para optimizar el renderizado. React Native usa estas keys para identificar qué elementos cambiaron, se agregaron o eliminaron
+          renderItem={renderItem}                 // Función para renderizar cada item
+          style={styles.list}                     // Estilos del contenedor
+          contentContainerStyle={styles.listContent} // Estilos del contenido interno
+        />
+      ) : (
+        // SectionList: lista organizada en secciones con headers
+        <SectionList
+          sections={datosSeccionados}             // Datos organizados por secciones
+          keyExtractor={(item, index) => item.id + index} // Key única por item
+          renderItem={renderItem}                 // Función para renderizar cada item
+          renderSectionHeader={({ section: { title } }) => ( // Renderiza el header de cada sección
+            <Text style={styles.sectionHeader}>{title}</Text>
+          )}
+          style={styles.list}                     // Estilos del contenedor
+          contentContainerStyle={styles.listContent} // Estilos del contenido interno
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  // Contenedor principal de la aplicación
   container: {
     flex: 1,
-    backgroundColor: '#e0eff1',
-    paddingTop: 50,
-    paddingHorizontal: 20,
+    backgroundColor: '#f0f0f0',
+    paddingTop: 50, 
+    alignItems: 'center', 
   },
+  // Estilo del título principal
   titulo: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#012677',
-    marginBottom: 15,
-    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
   },
-  inputRow: {
-    flexDirection: 'row',
-    marginBottom: 15,
+  // Estilo del botón para cambiar entre listas
+  switchButton: {
+    backgroundColor: '#007bff',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginBottom: 20,
   },
-  input: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    color: '#000000',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    height: 45,
-    marginRight: 10,
-  },
-  btnAgregar: {
-    backgroundColor: '#012677',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    justifyContent: 'center',
-  },
-  btnText: {
+  // Texto del botón de cambio
+  switchButtonText: {
     color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
-  scrollWrapper: {
-    position: 'relative',
-    height: 500,
+  // Estilo base para ambas listas
+  list: {
+    width: '100%', 
   },
-  scrollArea: {
-    backgroundColor: '#7db4b5',
-    borderRadius: 12,
-    padding: 10,
-    height: 500,
-    borderWidth: 1,
+  // Estilo del contenido interno de las listas
+  listContent: {
+    paddingBottom: 20, 
   },
-  item: {
-    marginBottom: 10,
+  // Estilo de los headers de sección (SectionList)
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    backgroundColor: '#e0e0e0', 
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginTop: 15, 
+    color: '#222',
+  },
+  // Estilo de cada tarjeta
+  itemCard: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
     padding: 15,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
-  texto: {
+  // Estilo del nombre en cada item
+  itemNombre: {
     fontSize: 18,
-    color: '#000000',
+    fontWeight: 'bold',
+    color: '#007bff',
+    marginBottom: 5,
   },
-  scrollBar: {
-    position: 'absolute',
-    width: 8,
-    right: 2,
-    backgroundColor: '#000000',
-    borderRadius: 3,
+  // Estilo del mensaje en cada item
+  itemMensaje: {
+    fontSize: 16,
+    color: '#555',
   },
 });
